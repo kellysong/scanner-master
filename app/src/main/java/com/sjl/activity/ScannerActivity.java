@@ -2,6 +2,7 @@ package com.sjl.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 
 import com.sjl.scanner.OnScanListener;
 import com.sjl.scanner.ScanMode;
@@ -16,7 +17,7 @@ public class ScannerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.scanner_activity);
-        scanner = new Scanner(this).init(ScanMode.USB_KEYBOARD).scanListener(new OnScanListener() {
+        scanner = new Scanner(this,ScanMode.USB_KEYBOARD).scanListener(new OnScanListener() {
             @Override
             public void onScanSuccess(String barcode) {
 
@@ -26,7 +27,12 @@ public class ScannerActivity extends AppCompatActivity {
             public void onScanFail(String barcode, Exception e) {
 
             }
-        }).run();
+        }).start();
+    }
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        scanner.dispatchKeyEvent(event);
+        return super.dispatchKeyEvent(event);
     }
 
     @Override

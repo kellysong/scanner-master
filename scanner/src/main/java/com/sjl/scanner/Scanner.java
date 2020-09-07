@@ -1,6 +1,7 @@
 package com.sjl.scanner;
 
 import android.content.Context;
+import android.view.KeyEvent;
 
 /**
  * TODO
@@ -14,13 +15,20 @@ import android.content.Context;
 public class Scanner {
 
     private Context context;
-    private AbstractScan scanInstance;
+    private BaseUsbScan baseUsbScan;
     private ScanMode scanMode;
+    private  AutoScan autoScan;
 
-    public Scanner(Context context) {
+    /**
+     * 初始化扫码器
+     * @param context
+     * @param scanMode
+     */
+    public Scanner(Context context,ScanMode scanMode) {
         this.context = context.getApplicationContext();
+        this.scanMode = scanMode;
+        init(scanMode);
     }
-
 
     /**
      * 初始化扫码模式
@@ -28,53 +36,73 @@ public class Scanner {
      * @param scanMode 扫码模式
      * @return
      */
-    public Scanner init(ScanMode scanMode) {
-        this.scanMode = scanMode;
+    private void init(ScanMode scanMode) {
         if (scanMode == ScanMode.USB_KEYBOARD) {
-            scanInstance = new AutoScan();
+            autoScan = new AutoScan();
         } else if (scanMode == ScanMode.USB_COMMAND) {
-            scanInstance = new UsbScan(context);
+            baseUsbScan = new UsbScan(context);
         } else if (scanMode == ScanMode.USB_AUTO) {
-            scanInstance = new AutoUsbScan(context);
+            baseUsbScan = new AutoUsbScan(context);
         } else {
             throw new IllegalArgumentException("不支持扫码模式：" + scanMode);
         }
-        return this;
     }
 
-
+    /**
+     * 扫码回调监听
+     * @param onScanListener
+     * @return
+     */
     public Scanner scanListener(OnScanListener onScanListener) {
-        scanInstance.setOnScanListener(onScanListener);
+        baseUsbScan.setOnScanListener(onScanListener);
         return this;
     }
 
-    public Scanner run() {
-        if (scanMode ==ScanMode.USB_KEYBOARD) {
-            AutoScan autoScan = (AutoScan) scanInstance;
-//            autoScan.analysisKeyEvent();//TODO
-        } else if (scanMode == ScanMode.USB_COMMAND || scanMode ==  ScanMode.USB_AUTO) {
-            BaseUsbScan baseUsbScan = (BaseUsbScan) scanInstance;
+    /**
+     * 启动扫码，usb
+     * @return
+     */
+    public Scanner start() {
+       if (scanMode == ScanMode.USB_COMMAND || scanMode ==  ScanMode.USB_AUTO) {
             baseUsbScan.startReading();
         }
         return this;
     }
 
+    /**
+     * 停止扫码，usb
+     */
     public void stop() {
-        if (scanMode == ScanMode.USB_KEYBOARD) {
-            AutoScan autoScan = (AutoScan) scanInstance;
+        if (scanMode == ScanMode.USB_KEYBOARD && autoScan != null) {
+             autoScan.cancel();
         } else if (scanMode == ScanMode.USB_COMMAND || scanMode ==  ScanMode.USB_AUTO) {
-            BaseUsbScan baseUsbScan = (BaseUsbScan) scanInstance;
             baseUsbScan.stopReading();
         }
     }
 
+    /**
+     * 取消扫码
+     */
     public void cancel() {
-        if (scanMode == ScanMode.USB_KEYBOARD) {
-            AutoScan autoScan = (AutoScan) scanInstance;
+        if (scanMode == ScanMode.USB_KEYBOARD  && autoScan != null) {
             autoScan.cancel();
         } else if (scanMode == ScanMode.USB_COMMAND || scanMode ==  ScanMode.USB_AUTO) {
-            BaseUsbScan baseUsbScan = (BaseUsbScan) scanInstance;
             baseUsbScan.cancel();
+        }
+    }
+
+    /**
+     * usb 键盘模式，需要注册
+     * <p>  @Override
+     *     public boolean dispatchKeyEvent(KeyEvent event) {
+     *         scanner.dispatchKeyEvent(event);
+     *         return super.dispatchKeyEvent(event);
+     *     }</p>
+     * @param event
+     */
+    public void dispatchKeyEvent(KeyEvent event) {
+        if (scanMode == ScanMode.USB_KEYBOARD  && autoScan != null) {
+            autoScan.analysisKeyEvent(event);
         }
     }
 }
