@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="scanner-master/app" />
+      <module fileurl="file://$PROJECT_DIR$/common-utils.iml" filepath="$PROJECT_DIR$/common-utils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/barcode-scanner/common-utils-library.iml" filepath="$PROJECT_DIR$/barcode-scanner/common-utils-library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/scanner/scanner.iml" filepath="$PROJECT_DIR$/scanner/scanner.iml" group="scanner-master/scanner" />
+      <module fileurl="file://$PROJECT_DIR$/scanner-master.iml" filepath="$PROJECT_DIR$/scanner-master.iml" group="scanner-master" />
+    </modules>
+  </component>
+</project>
