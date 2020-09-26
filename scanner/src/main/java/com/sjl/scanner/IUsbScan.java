@@ -12,14 +12,11 @@ package com.sjl.scanner;
 public interface IUsbScan {
     /**
      * 打开指定usb扫码
-     * <p>USB Serial(RS232的常规COM 端口)  6790, 29987</p>
-     * <p>USB hID 1550,2407</p>
      *
-     * @param vendorId  厂商 id
-     * @param productId 产品 id
+     * @param usbConfig
      * @return
      */
-     int openScan(int vendorId, int productId);
+     int openScan(UsbConfig usbConfig);
 
 
     /**

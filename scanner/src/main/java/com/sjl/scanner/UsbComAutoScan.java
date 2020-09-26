@@ -5,45 +5,44 @@ import android.content.Context;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 
-
 import com.hoho.android.usbserial.driver.CdcAcmSerialDriver;
 import com.hoho.android.usbserial.driver.CommonUsbSerialPort;
 import com.hoho.android.usbserial.driver.ProbeTable;
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
-import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
 import com.hoho.android.usbserial.util.SerialInputOutputManager;
+import com.sjl.scanner.util.LogUtils;
 
 /**
  * usb传虚拟串口通讯,自感模式
  *
  * @author Kelly
  * @version 1.0.0
- * @filename AutoUsbScan
+ * @filename UsbComAutoScan
  * @time 2020/7/3 18:01
  * @copyright(C) 2020 song
  */
-public class AutoUsbScan extends BaseUsbScan {
+public class UsbComAutoScan extends BaseUsbScan {
     private SerialInputOutputManager usbIoManager;
     private CommonUsbSerialPort usbSerialPort;
 
-    public AutoUsbScan(Context context) {
+    public UsbComAutoScan(Context context) {
         super(context);
     }
 
     @Override
-    public int openScan(int vendorId, int productId) {
+    public int openScan(UsbConfig usbConfig) {
         if (connected) {
             LogUtils.i("扫码器已经打开");
             return 0;
         }
-        UsbDevice usbDevice = findUsbDevice(vendorId, productId);
+        UsbDevice usbDevice = findUsbDevice(usbConfig);
         if (usbDevice == null) {
             return UsbErrorCode.USB_FIND_THIS_FAIL;
         }
 
         try {
-            UsbSerialProber customProber = getCustomProber(vendorId, productId);
+            UsbSerialProber customProber = getCustomProber(usbConfig.getVendorId(), usbConfig.getProductId());
 //            UsbSerialProber customProber = UsbSerialProber.getDefaultProber();
 
             //获取已插入的串口驱动
@@ -69,12 +68,10 @@ public class AutoUsbScan extends BaseUsbScan {
             usbSerialPort = (CommonUsbSerialPort) usbSerialDriver.getPorts().get(0);
             usbSerialPort.open(connection);
             //此条码默认配置为：设置串口的波特率、数据位，停止位，校验位
-
             //115200 波特率，8 位数据位，无校验位，1 位停止位）
-            usbSerialPort.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
+            usbSerialPort.setParameters(usbConfig.getBaudRate(), usbConfig.getDataBits(), usbConfig.getStopBits(),usbConfig.getParity());
             connected = true;
-//            startReading();
-            ////添加监听
+            //添加监听
             usbIoManager = new SerialInputOutputManager(usbSerialPort, new SerialInputOutputManager.Listener() {
 
                 /*
@@ -164,17 +161,12 @@ public class AutoUsbScan extends BaseUsbScan {
         }
         readFlag = true;
         //不能关闭读的通道，不然下次打开会有历史数据
-
     }
 
 
     @Override
     public void stopReading() {
         readFlag = false;
-/*        if (usbIoManager != null) {
-            usbIoManager.stop();
-        }
-        usbIoManager = null;*/
     }
 
     @Override
@@ -186,7 +178,7 @@ public class AutoUsbScan extends BaseUsbScan {
         try {
             LogUtils.i("扫码重连开始第" + reconnectCount + "重连");
             closeScan();
-            int i = openScan(vendorId, productId);
+            int i = openScan(usbConfig);
             if (i == UsbErrorCode.USB_OK) {
                 LogUtils.i("=====扫码重连成功=====");
                 startReading();
@@ -202,8 +194,8 @@ public class AutoUsbScan extends BaseUsbScan {
 
     @Override
     public void closeScan() {
+        super.closeScan();
         connected = false;
-//        stopReading();
         try {
             if (usbIoManager != null) {
                 usbIoManager.stop();
@@ -219,9 +211,4 @@ public class AutoUsbScan extends BaseUsbScan {
 
     }
 
-    @Override
-    public void cancel() {
-        super.cancel();
-        closeScan();
-    }
 }

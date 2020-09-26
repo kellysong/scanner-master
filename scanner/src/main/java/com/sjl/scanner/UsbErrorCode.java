@@ -5,7 +5,7 @@ package com.sjl.scanner;
  *
  * @author Kelly
  * @version 1.0.0
- * @filename UsbConstant
+ * @filename UsbErrorCode
  * @time 2020/7/1 13:43
  * @copyright(C) 2020 song
  */

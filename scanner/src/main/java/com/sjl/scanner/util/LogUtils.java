@@ -1,4 +1,4 @@
-package com.sjl.scanner;
+package com.sjl.scanner.util;
 
 import android.util.Log;
 
@@ -16,7 +16,7 @@ public class LogUtils {
 
     }
 
-    private static final String TAG = "SIMPLE_LOGGER";
+    private static final String TAG = "SCAN_LOGGER";
 
     public static void i(String str) {
         Log.i(TAG, str);

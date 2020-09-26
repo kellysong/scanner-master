@@ -9,6 +9,7 @@ import android.hardware.usb.UsbInterface;
 import android.os.SystemClock;
 
 
+import com.sjl.scanner.util.LogUtils;
 
 import java.util.Arrays;
 
@@ -17,11 +18,11 @@ import java.util.Arrays;
  *
  * @author Kelly
  * @version 1.0.0
- * @filename UsbScanHelper
+ * @filename UsbCmdScan
  * @time 2020/7/1 11:01
  * @copyright(C) 2020 song
  */
-public class UsbScan extends BaseUsbScan {
+public class UsbCmdScan extends BaseUsbScan {
 
     /**
      * 块输出端点
@@ -44,19 +45,18 @@ public class UsbScan extends BaseUsbScan {
 
 
 
-    public UsbScan(Context context) {
+    public UsbCmdScan(Context context) {
         super(context);
-        mContext = context;
     }
 
 
     @Override
-    public int openScan(int vendorId, int productId) {
+    public int openScan(UsbConfig usbConfig) {
         if (connected) {
             LogUtils.i("已经打开");
             return 0;
         }
-        UsbDevice usbDevice = findUsbDevice(vendorId, productId);
+        UsbDevice usbDevice = findUsbDevice(usbConfig);
         if (usbDevice == null) {
             return UsbErrorCode.USB_FIND_THIS_FAIL;
         }
@@ -180,9 +180,10 @@ public class UsbScan extends BaseUsbScan {
                 try {
                     byte[] buffer = new byte[512];
                     Arrays.fill(buffer, 0, buffer.length, (byte) 0);
+                    UsbConfig.ScanCmd scanCmd = usbConfig.getScanCmd();
                     while (readFlag) {
                         synchronized (this) {
-                            int i = sendData(ScanCmd.SCAN_OPEN);//写
+                            int i = sendData(scanCmd.getScanOpen());//写
                             if (i == UsbErrorCode.USB_SEND_DATA_FAIL) {
                                 continue;
                             }
@@ -191,19 +192,12 @@ public class UsbScan extends BaseUsbScan {
                             }
                             int ret = conn.bulkTransfer(epBulkIn, buffer, buffer.length, 100);//获取数据流
                             if (ret > 0) {
-                                sendData(ScanCmd.SCAN_CLOSE);
+                                sendData(scanCmd.getScanClose());
                                 try {
                                     byte[] bs = new byte[ret];
                                     System.arraycopy(buffer, 0, bs, 0, ret);
                                     String barcode = new String(bs).trim();
-                                    if (barcode.startsWith("8410091")
-                                            || barcode.startsWith("8410092")
-                                            || barcode.startsWith("8510061000")
-                                            || barcode.startsWith("861001")) {
-                                        continue;
-                                    } else {
-                                        disposeScanData(barcode);
-                                    }
+                                    disposeScanData(barcode);
                                 } catch (Exception e) {
                                     LogUtils.e("扫码拷贝异常", e);
                                 }
@@ -212,7 +206,7 @@ public class UsbScan extends BaseUsbScan {
                             } else {
                                 SystemClock.sleep(200);
                             }
-                            sendData(ScanCmd.SCAN_CLOSE);
+                            sendData(scanCmd.getScanClose());
                         }
                     }
                 } catch (Exception e) {
@@ -242,10 +236,12 @@ public class UsbScan extends BaseUsbScan {
     }
 
 
+
     @Override
     public void stopReading() {
         readFlag = false;
-        sendData(ScanCmd.SCAN_CLOSE);
+        UsbConfig.ScanCmd scanCmd = usbConfig.getScanCmd();
+        sendData(scanCmd.getScanClose());
     }
 
     @Override
@@ -256,7 +252,7 @@ public class UsbScan extends BaseUsbScan {
         reconnectCount++;
         LogUtils.i("开始第" + reconnectCount + "重连");
         closeScan();
-        int i = openScan(vendorId, productId);
+        int i = openScan(usbConfig);
         if (i == UsbErrorCode.USB_OK) {
             LogUtils.i("=====重连成功=====");
             startReading();
@@ -268,6 +264,7 @@ public class UsbScan extends BaseUsbScan {
 
     @Override
     public void closeScan() {
+        super.closeScan();
         connected = false;
         stopReading();
         if (mContext != null && broadcastReceiver != null) {
@@ -279,11 +276,4 @@ public class UsbScan extends BaseUsbScan {
         }
     }
 
-
-
-    @Override
-    public void cancel() {
-        super.cancel();
-        closeScan();
-    }
 }

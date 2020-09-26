@@ -1,4 +1,4 @@
-package com.sjl.scanner;
+package com.sjl.scanner.util;
 
 /**
  * TODO

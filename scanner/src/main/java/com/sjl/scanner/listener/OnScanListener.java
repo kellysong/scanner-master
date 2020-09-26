@@ -1,4 +1,4 @@
-package com.sjl.scanner;
+package com.sjl.scanner.listener;
 
 /**
  * TODO
@@ -16,14 +16,5 @@ public interface OnScanListener {
      * @param barcode
      */
     void onScanSuccess(String barcode);
-
-    /**
-     * 扫码失败，回调原始数据
-     *
-     * @param barcode
-     * @param e
-     */
-    void onScanFail(String barcode, Exception e);
-
 
 }
