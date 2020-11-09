@@ -31,6 +31,8 @@ public class ScannerUsbActivity extends AppCompatActivity {
         usbConfig.setProductId(1233);
         usbConfig.setVendorId(1234);
 //        usbScan = new UsbCmdScan(this); //通过usb连接扫码, 发送命令扫码
+        UsbConfig.SerialPortConfig serialPortConfig = new UsbConfig.SerialPortConfig();
+        usbConfig.setSerialPortConfig(serialPortConfig);
         usbScan = new UsbComAutoScan(this);//通过usb转串口，自感模式,推荐
         usbScan.setOnScanListener(new OnScanListener() {
             @Override

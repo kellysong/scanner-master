@@ -27,34 +27,101 @@ public class UsbConfig {
     private int productId;
 
     // usb com 需要
-    /**
-     * 波特率
-     */
-    private int baudRate = 115200;
-    /**
-     * 数据位
-     */
-    private int dataBits = 8;
-    /**
-     * 停止位
-     */
-    private int stopBits = UsbSerialPort.STOPBITS_1;
-    /**
-     * 校验位
-     */
-    private int parity = UsbSerialPort.PARITY_NONE;
+    private SerialPortConfig serialPortConfig;
 
+    public final static class SerialPortConfig {
+        /**
+         * 波特率
+         */
+        private int baudRate = 115200;
+        /**
+         * 数据位
+         *
+         * @param dataBits 默认8,可选值为5~8
+         */
+        private int dataBits = UsbSerialPort.DATABITS_8;
+        /**
+         * 校验位
+         *
+         * @param parity 0:无校验位(NONE，默认)；1:奇校验位(ODD);2:偶校验位(EVEN)
+         */
+        private int parity = UsbSerialPort.PARITY_NONE;
+        /**
+         * 停止位
+         *
+         * @param stopBits 默认1；1:1位停止位；2:2位停止位
+         */
+        private int stopBits = UsbSerialPort.STOPBITS_1;
+        /**
+         * 标志
+         *
+         * @param flags 默认0
+         */
+        private int flags = 0;
+
+        public SerialPortConfig() {
+        }
+
+        /**
+         * 波特率
+         *
+         * @param baudRate
+         */
+        public SerialPortConfig(int baudRate) {
+            this.baudRate = baudRate;
+        }
+
+        public int getBaudRate() {
+            return baudRate;
+        }
+
+        public void setBaudRate(int baudRate) {
+            this.baudRate = baudRate;
+        }
+
+        public int getDataBits() {
+            return dataBits;
+        }
+
+        public void setDataBits(int dataBits) {
+            this.dataBits = dataBits;
+        }
+
+        public int getParity() {
+            return parity;
+        }
+
+        public void setParity(int parity) {
+            this.parity = parity;
+        }
+
+        public int getStopBits() {
+            return stopBits;
+        }
+
+        public void setStopBits(int stopBits) {
+            this.stopBits = stopBits;
+        }
+
+        public int getFlags() {
+            return flags;
+        }
+
+        public void setFlags(int flags) {
+            this.flags = flags;
+        }
+    }
 
     /**
      * usb cmd需要
      */
     private ScanCmd scanCmd = new ScanCmd();
 
-    public static class ScanCmd{
+    public static final class ScanCmd {
         /**
          * 扫码触发指令，打开
          */
-        private  byte[] scanOpen = ByteUtils.hexStringToByteArr("FF540D");
+        private byte[] scanOpen = ByteUtils.hexStringToByteArr("FF540D");
         /**
          * 扫码触发指令，关闭
          */
@@ -93,36 +160,12 @@ public class UsbConfig {
         this.productId = productId;
     }
 
-    public int getBaudRate() {
-        return baudRate;
+    public SerialPortConfig getSerialPortConfig() {
+        return serialPortConfig;
     }
 
-    public void setBaudRate(int baudRate) {
-        this.baudRate = baudRate;
-    }
-
-    public int getDataBits() {
-        return dataBits;
-    }
-
-    public void setDataBits(int dataBits) {
-        this.dataBits = dataBits;
-    }
-
-    public int getStopBits() {
-        return stopBits;
-    }
-
-    public void setStopBits(int stopBits) {
-        this.stopBits = stopBits;
-    }
-
-    public int getParity() {
-        return parity;
-    }
-
-    public void setParity(int parity) {
-        this.parity = parity;
+    public void setSerialPortConfig(SerialPortConfig serialPortConfig) {
+        this.serialPortConfig = serialPortConfig;
     }
 
     public ScanCmd getScanCmd() {

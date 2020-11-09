@@ -5,9 +5,7 @@ import android.content.Context;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 
-import com.hoho.android.usbserial.driver.CdcAcmSerialDriver;
 import com.hoho.android.usbserial.driver.CommonUsbSerialPort;
-import com.hoho.android.usbserial.driver.ProbeTable;
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
 import com.hoho.android.usbserial.util.SerialInputOutputManager;
@@ -36,17 +34,22 @@ public class UsbComAutoScan extends BaseUsbScan {
             LogUtils.i("扫码器已经打开");
             return 0;
         }
+        UsbConfig.SerialPortConfig serialPortConfig = usbConfig.getSerialPortConfig();
+        if (serialPortConfig == null){
+            throw new NullPointerException("serialPortConfig is null.");
+        }
         UsbDevice usbDevice = findUsbDevice(usbConfig);
         if (usbDevice == null) {
             return UsbErrorCode.USB_FIND_THIS_FAIL;
         }
 
         try {
-            UsbSerialProber customProber = getCustomProber(usbConfig.getVendorId(), usbConfig.getProductId());
-//            UsbSerialProber customProber = UsbSerialProber.getDefaultProber();
-
+            UsbSerialDriver usbSerialDriver = UsbSerialProber.getDefaultProber().probeDevice(usbDevice);
+            if (usbSerialDriver == null) {
+                LogUtils.e("connection failed: no driver for device");
+                return UsbErrorCode.USB_FIND_THIS_FAIL;
+            }
             //获取已插入的串口驱动
-            UsbSerialDriver usbSerialDriver = customProber.probeDevice(usbDevice);
             UsbDeviceConnection connection;
             if (mUsbManager.hasPermission(usbDevice)) {
                 //有权限，那么打开
@@ -69,7 +72,7 @@ public class UsbComAutoScan extends BaseUsbScan {
             usbSerialPort.open(connection);
             //此条码默认配置为：设置串口的波特率、数据位，停止位，校验位
             //115200 波特率，8 位数据位，无校验位，1 位停止位）
-            usbSerialPort.setParameters(usbConfig.getBaudRate(), usbConfig.getDataBits(), usbConfig.getStopBits(),usbConfig.getParity());
+            usbSerialPort.setParameters(serialPortConfig.getBaudRate(), serialPortConfig.getDataBits(), serialPortConfig.getStopBits(),serialPortConfig.getParity());
             connected = true;
             //添加监听
             usbIoManager = new SerialInputOutputManager(usbSerialPort, new SerialInputOutputManager.Listener() {
@@ -129,13 +132,6 @@ public class UsbComAutoScan extends BaseUsbScan {
             LogUtils.e("connection failed: ", e);
             return UsbErrorCode.USB_UNKNOWN_FAIL;
         }
-    }
-
-
-    private UsbSerialProber getCustomProber(int vid, int pid) {
-        ProbeTable customTable = new ProbeTable();
-        customTable.addProduct(vid, pid, CdcAcmSerialDriver.class);
-        return new UsbSerialProber(customTable);
     }
 
 
