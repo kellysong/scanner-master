@@ -1,4 +1,4 @@
-package com.sjl;
+package com.sjl.scanner.test;
 
 import org.junit.Test;
 

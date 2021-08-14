@@ -1,4 +1,4 @@
-package com.sjl.test;
+package com.sjl.scanner.test;
 
 import android.content.Intent;
 import android.os.Bundle;

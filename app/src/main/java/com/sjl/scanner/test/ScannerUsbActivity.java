@@ -1,4 +1,4 @@
-package com.sjl.test;
+package com.sjl.scanner.test;
 
 import android.hardware.usb.UsbDevice;
 import android.os.Bundle;
@@ -34,10 +34,11 @@ public class ScannerUsbActivity extends AppCompatActivity {
         UsbConfig.SerialPortConfig serialPortConfig = new UsbConfig.SerialPortConfig();
         usbConfig.setSerialPortConfig(serialPortConfig);
         usbScan = new UsbComAutoScan(this);//通过usb转串口，自感模式,推荐
+
         usbScan.setOnScanListener(new OnScanListener() {
             @Override
             public void onScanSuccess(String barcode) {
-
+                et_barcode.setText(barcode);
             }
         });
     }
