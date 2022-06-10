@@ -7,6 +7,7 @@
 
     <EditText
         android:id="@+id/et_barcode"
+        android:hint="扫码回显"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

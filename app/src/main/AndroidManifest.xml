@@ -8,6 +8,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:name=".MyApplication"
         android:theme="@style/AppTheme">
         <activity android:name="com.sjl.scanner.test.MainActivity">
             <intent-filter>
@@ -23,7 +24,12 @@
         <activity
             android:name="com.sjl.scanner.test.ScannerUsbKeyboardActivity"
             android:configChanges="orientation|keyboard|keyboardHidden"
+            android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
+        <activity android:name=".SettingActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
     </application>
 
 

@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:background="#fff2f2f2"
+    android:orientation="vertical"
+    android:tag="layout/settings_fragment_0">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:title="设置"
+        android:background="@color/colorPrimary"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        android:theme="@style/ToolBarTheme"
+        app:titleTextAppearance="?android:attr/textAppearanceMedium"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="UsbComAutoScan" />
+
+            <RelativeLayout
+                android:id="@+id/itemBaudRate"
+                android:layout_width="match_parent"
+                android:layout_height="50.0dip"
+                android:layout_marginTop="10.0dip"
+                android:background="@drawable/list_item_bg_white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="20.0dip"
+                    android:gravity="center_vertical"
+                    android:text="波特率"
+                    android:textColor="@color/textColor" />
+
+                <TextView
+                    android:id="@+id/tvBaudRate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="20.0dip"
+                    android:textColor="@color/subTextColor"
+                    android:textSize="12.0sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1.0px"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/divider" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/itemDataBits"
+                android:layout_width="match_parent"
+                android:layout_height="50.0dip"
+                android:background="@drawable/list_item_bg_white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="20.0dip"
+                    android:gravity="center_vertical"
+                    android:text="数据位"
+                    android:textColor="@color/textColor" />
+
+                <TextView
+                    android:id="@+id/tvDataBits"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="20.0dip"
+                    android:textColor="@color/subTextColor"
+                    android:textSize="12.0sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1.0px"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/divider" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/itemStopBits"
+                android:layout_width="match_parent"
+                android:layout_height="50.0dip"
+                android:background="@drawable/list_item_bg_white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="20.0dip"
+                    android:gravity="center_vertical"
+                    android:text="停止位"
+                    android:textColor="@color/textColor" />
+
+                <TextView
+                    android:id="@+id/tvStopBits"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="20.0dip"
+                    android:textColor="@color/subTextColor"
+                    android:textSize="12.0sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1.0px"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/divider" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/itemParity"
+                android:layout_width="match_parent"
+                android:layout_height="50.0dip"
+                android:background="@drawable/list_item_bg_white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="20.0dip"
+                    android:gravity="center_vertical"
+                    android:text="校验位"
+                    android:textColor="@color/textColor" />
+
+                <TextView
+                    android:id="@+id/tvParity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="20.0dip"
+                    android:textColor="@color/subTextColor"
+                    android:textSize="12.0sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1.0px"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/divider" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="UsbCmdScan" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50.0dip"
+                android:background="@drawable/list_item_bg_white">
+
+
+                <EditText
+                    android:id="@+id/et_open_cmd"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20.0dip"
+                    android:hint="扫码打开指令(16进制,个数必须是2的倍数)"
+                    android:singleLine="true"
+                    android:maxLines="1"
+                    android:textColor="@color/subTextColor"
+                    android:textSize="12.0sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1.0px"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/divider" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50.0dip"
+                android:background="@drawable/list_item_bg_white">
+
+
+                <EditText
+                    android:id="@+id/et_close_cmd"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20.0dip"
+                    android:hint="扫码关闭指令(16进制表示,个数必须是2的倍数)"
+                    android:singleLine="true"
+                    android:maxLines="1"
+                    android:textColor="@color/subTextColor"
+                    android:textSize="12.0sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1.0px"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/divider" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

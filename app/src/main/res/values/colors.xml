@@ -11,5 +11,8 @@
     <color name="green_start">#00CD66</color>
     <color name="green_end">#548B54</color>
 
+    <color name="textColor">#ff222222</color>
+    <color name="subTextColor">#ff808080</color>
+    <color name="divider">#ffe0e0e0</color>
 
 </resources>

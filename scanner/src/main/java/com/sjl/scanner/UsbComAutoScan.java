@@ -55,12 +55,13 @@ public class UsbComAutoScan extends BaseUsbScan {
                 //有权限，那么打开
                 connection = mUsbManager.openDevice(usbSerialDriver.getDevice());
             } else {
-                registerPermissionReceiver(usbDevice);
-                if (mUsbManager.hasPermission(usbDevice)) { //权限获取成功
-                    connection = mUsbManager.openDevice(usbDevice);
-                } else {
-                    LogUtils.w("没有权限");
+                //一般需要外部申请授权
+                UsbScanHelper.getInstance().requestPermission(usbDevice);
+                if (!UsbScanHelper.getInstance().hasPermission(usbDevice)){
+                    LogUtils.e("申请usb权限失败");
                     return UsbErrorCode.USB_PERMISSION_FAIL;
+                }else {
+                    connection = mUsbManager.openDevice(usbDevice);
                 }
             }
             if (connection == null) {
@@ -73,7 +74,7 @@ public class UsbComAutoScan extends BaseUsbScan {
             //此条码默认配置为：设置串口的波特率、数据位，停止位，校验位
             //115200 波特率，8 位数据位，无校验位，1 位停止位）
             usbSerialPort.setParameters(serialPortConfig.getBaudRate(), serialPortConfig.getDataBits(), serialPortConfig.getStopBits(),serialPortConfig.getParity());
-            connected = true;
+
             //添加监听
             usbIoManager = new SerialInputOutputManager(usbSerialPort, new SerialInputOutputManager.Listener() {
 
@@ -125,8 +126,11 @@ public class UsbComAutoScan extends BaseUsbScan {
                     reconnect();
                 }
             });
+            usbIoManager.setReadTimeout(usbConfig.getReadTimeout());
+            usbIoManager.setWriteTimeout(usbConfig.getWriteTimeout());
             //在新的线程中监听串口的数据变化
             executorService.submit(usbIoManager);
+            connected = true;
             return UsbErrorCode.USB_OK;
         } catch (Exception e) {
             LogUtils.e("connection failed: ", e);
@@ -138,8 +142,11 @@ public class UsbComAutoScan extends BaseUsbScan {
     @Override
     public int sendData(byte[] buffer) {
         try {
-            usbSerialPort.write(buffer, 2000);
-            return UsbErrorCode.USB_OK;
+            if (usbConfig != null){
+                usbSerialPort.write(buffer, usbConfig.getWriteTimeout());
+                return UsbErrorCode.USB_OK;
+            }
+
         } catch (Exception e) {
             LogUtils.e("发送数据异常", e);
         }

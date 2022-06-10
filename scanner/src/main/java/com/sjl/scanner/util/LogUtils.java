@@ -12,10 +12,13 @@ import android.util.Log;
  * @copyright(C) 2020 song
  */
 public class LogUtils {
+    private static boolean debug = false;
     private LogUtils() {
 
     }
-
+    public static void init(boolean debug){
+        LogUtils.debug = debug;
+    }
     private static final String TAG = "SCAN_LOGGER";
 
     public static void i(String str) {

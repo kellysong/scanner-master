@@ -105,16 +105,17 @@ public class UsbCmdScan extends BaseUsbScan {
 
 
         //5.打开conn连接通道
-        if (mUsbManager.hasPermission(usbDevice)) {
+        if (UsbScanHelper.getInstance().hasPermission(usbDevice)) {
             //有权限，那么打开
             conn = mUsbManager.openDevice(usbDevice);
         } else {
-            registerPermissionReceiver(usbDevice);
-            if (mUsbManager.hasPermission(usbDevice)) { //权限获取成功
-                conn = mUsbManager.openDevice(usbDevice);
-            } else {
-                LogUtils.w("没有权限");
+            //一般需要外部申请授权
+            UsbScanHelper.getInstance().requestPermission(usbDevice);
+            if (!UsbScanHelper.getInstance().hasPermission(usbDevice)){
+                LogUtils.e("申请usb权限失败");
                 return UsbErrorCode.USB_PERMISSION_FAIL;
+            }else {
+                conn = mUsbManager.openDevice(usbDevice);
             }
         }
         if (conn == null) {
@@ -131,6 +132,7 @@ public class UsbCmdScan extends BaseUsbScan {
         }
         return UsbErrorCode.USB_UNKNOWN_FAIL;
     }
+
 
 
     private boolean checkUsbEndpoint() {
@@ -156,7 +158,7 @@ public class UsbCmdScan extends BaseUsbScan {
     @Override
     public int sendData(byte[] buffer) {
         if (conn == null || epBulkOut == null) return UsbErrorCode.USB_UNKNOWN_FAIL;
-        if (conn.bulkTransfer(epBulkOut, buffer, buffer.length, 200) >= 0) {
+        if (conn.bulkTransfer(epBulkOut, buffer, buffer.length, usbConfig.getWriteTimeout()) >= 0) {
             //0 或者正数表示成功
             return UsbErrorCode.USB_OK;
         } else {
@@ -190,7 +192,7 @@ public class UsbCmdScan extends BaseUsbScan {
                             if (conn == null) {
                                 break;
                             }
-                            int ret = conn.bulkTransfer(epBulkIn, buffer, buffer.length, 100);//获取数据流
+                            int ret = conn.bulkTransfer(epBulkIn, buffer, buffer.length, usbConfig.getReadTimeout());//获取数据流
                             if (ret > 0) {
                                 sendData(scanCmd.getScanClose());
                                 try {
@@ -226,7 +228,7 @@ public class UsbCmdScan extends BaseUsbScan {
              */
             private void resetBuffer(byte[] buffer, int toIndex) {
                 Arrays.fill(buffer, 0, toIndex, (byte) 0);
-                int i = conn.bulkTransfer(epBulkIn, buffer, buffer.length, 100);
+                int i = conn.bulkTransfer(epBulkIn, buffer, buffer.length, usbConfig.getReadTimeout());
                 if (i > 0) {
                     LogUtils.w("=========释放重复读数据,length:" + i);
                     Arrays.fill(buffer, 0, i, (byte) 0);
@@ -240,8 +242,11 @@ public class UsbCmdScan extends BaseUsbScan {
     @Override
     public void stopReading() {
         readFlag = false;
-        UsbConfig.ScanCmd scanCmd = usbConfig.getScanCmd();
-        sendData(scanCmd.getScanClose());
+        if (usbConfig != null){
+            UsbConfig.ScanCmd scanCmd = usbConfig.getScanCmd();
+            sendData(scanCmd.getScanClose());
+        }
+
     }
 
     @Override

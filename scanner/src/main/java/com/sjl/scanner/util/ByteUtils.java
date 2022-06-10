@@ -24,4 +24,18 @@ public class ByteUtils {
         }
         return ret;
     }
+
+    /**
+     * 字节数组转16进制字符串
+     * @param b
+     * @return
+     */
+    public static String byteArrToHexString(byte[] b) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < b.length; i++) {
+            result.append(Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1));
+        }
+        return result.toString().toUpperCase();
+    }
+
 }

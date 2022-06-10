@@ -3,8 +3,10 @@ package com.sjl.scanner;
 import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.sjl.scanner.util.ByteUtils;
 
+import java.util.Arrays;
+
 /**
- * usb连接配置类
+ * usb连接配置类，默认有缺省值
  *
  * @author Kelly
  * @version 1.0.0
@@ -25,9 +27,19 @@ public class UsbConfig {
      * 产品 id
      */
     private int productId;
+    /**
+     * 写超时，毫秒
+     */
+    private int writeTimeout = 800;
+    /**
+     * 读超时，毫秒
+     */
+    private int readTimeout = 800;
 
-    // usb com 需要
-    private SerialPortConfig serialPortConfig;
+    /**
+     * usb com 需要
+     */
+    private SerialPortConfig serialPortConfig = new SerialPortConfig();
 
     public final static class SerialPortConfig {
         /**
@@ -43,13 +55,13 @@ public class UsbConfig {
         /**
          * 校验位
          *
-         * @param parity 0:无校验位(NONE，默认)；1:奇校验位(ODD);2:偶校验位(EVEN)
+         * @param parity 0:无校验位(NONE，默认)；1:奇校验位(ODD);2:偶校验位(EVEN);3:高位(MARK);4:低位(SPACE)
          */
         private int parity = UsbSerialPort.PARITY_NONE;
         /**
          * 停止位
          *
-         * @param stopBits 默认1；1:1位停止位；2:2位停止位
+         * @param stopBits 默认1；1:1位停止位；2:2位停止位,3:1.5位停止位
          */
         private int stopBits = UsbSerialPort.STOPBITS_1;
         /**
@@ -110,6 +122,17 @@ public class UsbConfig {
         public void setFlags(int flags) {
             this.flags = flags;
         }
+
+        @Override
+        public String toString() {
+            return "{" +
+                    "baudRate=" + baudRate +
+                    ", dataBits=" + dataBits +
+                    ", parity=" + parity +
+                    ", stopBits=" + stopBits +
+                    ", flags=" + flags +
+                    '}';
+        }
     }
 
     /**
@@ -141,6 +164,14 @@ public class UsbConfig {
 
         public void setScanClose(byte[] scanClose) {
             this.scanClose = scanClose;
+        }
+
+        @Override
+        public String toString() {
+            return "{" +
+                    "scanOpen=" + ByteUtils.byteArrToHexString(scanOpen) +
+                    ", scanClose=" + ByteUtils.byteArrToHexString(scanClose) +
+                    '}';
         }
     }
 
@@ -174,6 +205,34 @@ public class UsbConfig {
 
     public void setScanCmd(ScanCmd scanCmd) {
         this.scanCmd = scanCmd;
+    }
+
+    public int getWriteTimeout() {
+        return writeTimeout;
+    }
+
+    public void setWriteTimeout(int writeTimeout) {
+        this.writeTimeout = writeTimeout;
+    }
+
+    public int getReadTimeout() {
+        return readTimeout;
+    }
+
+    public void setReadTimeout(int readTimeout) {
+        this.readTimeout = readTimeout;
+    }
+
+    @Override
+    public String toString() {
+        return "UsbConfig{" +
+                "vendorId=" + vendorId +
+                ", productId=" + productId +
+                ", writeTimeout=" + writeTimeout +
+                ", readTimeout=" + readTimeout +
+                ", serialPortConfig=" + serialPortConfig +
+                ", scanCmd=" + scanCmd +
+                '}';
     }
 }
 
