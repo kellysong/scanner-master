@@ -15,6 +15,7 @@ import com.sjl.scanner.util.ByteUtils;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 /**
  * 扫码设置，保存到内存中
@@ -55,8 +56,13 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         et_close_cmd = findViewById(R.id.et_close_cmd);
         et_open_cmd.addTextChangedListener(this);
         et_close_cmd.addTextChangedListener(this);
-
-        findViewById(R.id.toolbar).setOnClickListener(this);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         initDefaultValue();
     }
 
@@ -94,10 +100,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         final UsbConfig.SerialPortConfig serialPortConfig = usbConfig.getSerialPortConfig();
 
         switch (v.getId()) {
-            case R.id.toolbar: {
-                finish();
-                break;
-            }
             case R.id.itemBaudRate: {
                 final String[] values = getResources().getStringArray(R.array.baudRates);
                 int pos = java.util.Arrays.asList(values).indexOf(String.valueOf(baudRate));

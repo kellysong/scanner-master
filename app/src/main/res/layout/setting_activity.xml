@@ -15,6 +15,7 @@
         android:background="@color/colorPrimary"
         app:navigationIcon="?attr/homeAsUpIndicator"
         android:theme="@style/ToolBarTheme"
+        app:titleTextColor="@android:color/white"
         app:titleTextAppearance="?android:attr/textAppearanceMedium"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 
